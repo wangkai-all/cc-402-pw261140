@@ -32,3 +32,6 @@ test-results/
 *.sqlite3-shm
 *.sqlite3-journal
 !*.traineddata.gz
+
+# Runtime data: metadata DB and real data files (partitions/reports/copies)
+var/

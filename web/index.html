@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>分区数据留存治理控制台</title>
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<header>
+  <h1>分区数据留存治理控制台</h1>
+  <div class="clock-bar">
+    <div>虚拟业务时钟：<b id="virtual-clock">--</b>
+      <span class="hint">（到期/过期判定用，可快进）</span></div>
+    <div class="clock-actions">
+      <button data-clock="86400">快进 1 天</button>
+      <button data-clock="604800">快进 7 天</button>
+      <button data-clock="2592000">快进 30 天</button>
+    </div>
+  </div>
+</header>
+
+<section class="kpis" id="kpis"></section>
+
+<nav class="tabs">
+  <button class="tab active" data-tab="reap">可清理范围 / 回收</button>
+  <button class="tab" data-tab="partitions">分区与留存原因</button>
+  <button class="tab" data-tab="tasks">加工任务（失联 / 恢复）</button>
+  <button class="tab" data-tab="reports">封存报告（续用）</button>
+  <button class="tab" data-tab="grants">引用授权台账</button>
+  <button class="tab" data-tab="events">审计事件</button>
+</nav>
+
+<!-- 操作面板 -->
+<section class="panel" id="panel-actions">
+  <div class="card">
+    <h3>① 造数与策略</h3>
+    <button id="btn-seed">生成虚构分区数据</button>
+    <hr>
+    <label>分区 zone
+      <select id="pol-zone"><option>orders</option><option>events</option></select>
+    </label>
+    <label>新留存天数 <input id="pol-days" type="number" value="3" min="1" style="width:80px"></label>
+    <button id="btn-policy">缩短留存期（留版本痕迹）</button>
+    <hr>
+    <label>按当前策略新建分区：zone
+      <select id="np-zone"><option>orders</option><option>events</option></select>
+    </label>
+    <label>业务日 <input id="np-day" value="2026-11-20" style="width:120px"></label>
+    <button id="btn-new-partition" class="ghost">新建分区</button>
+  </div>
+  <div class="card">
+    <h3>② 加工任务</h3>
+    <label>任务名 <input id="task-name" value="每日汇总加工" style="width:140px"></label>
+    <label>输入分区 id（逗号分隔）<input id="task-inputs" value="1,2,3" style="width:120px"></label>
+    <button id="btn-task">创建加工任务（签租约）</button>
+  </div>
+  <div class="card">
+    <h3>③ 封存报告</h3>
+    <label>来源任务 id <input id="rep-task" value="1" style="width:70px"></label>
+    <label>分区 id <input id="rep-parts" value="1,2" style="width:100px"></label>
+    <label>模式
+      <select id="rep-mode"><option value="HOLD">HOLD 延迟回收</option><option value="COPY">COPY 必要副本</option></select>
+    </label>
+    <label>保留天数 <input id="rep-days" type="number" value="10" min="1" style="width:80px"></label>
+    <button id="btn-report">封存报告</button>
+  </div>
+</section>
+
+<!-- Tab 内容 -->
+<section class="tab-body active" id="tab-reap"></section>
+<section class="tab-body" id="tab-partitions"></section>
+<section class="tab-body" id="tab-tasks"></section>
+<section class="tab-body" id="tab-reports"></section>
+<section class="tab-body" id="tab-grants"></section>
+<section class="tab-body" id="tab-events"></section>
+
+<footer>
+  回收只认「虚拟到期 + 引用台账」，不看文件日期；真实 unlink 文件并核对消失。
+  心跳失联走真实墙钟，恢复时逐个分区重新确认读取权并换发新租约令牌。
+</footer>
+
+<div id="toast"></div>
+<script src="/app.js"></script>
+</body>
+</html>
